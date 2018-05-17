@@ -170,6 +170,15 @@ au BufNewFile,BufRead *.pl map <buffer><F7> :w!<cr>
 au FileType xml exe ":silent 1,$!xmllint --format --recover - 2>/dev/null"
 
 """"""""""""""""""""""""""""""
+" Formatters
+""""""""""""""""""""""""""""""
+command! -range -nargs=0 JsonFormat :<line1>,<line2>!python -m json.tool
+command! -range -nargs=0 Md5 :<line1>,<line2>!openssl dgst -md5
+command! -range -nargs=0 Sha1 :<line1>,<line2>!openssl dgst -Sha1
+command! -range -nargs=0 Sha256 :<line1>,<line2>!openssl dgst -Sha256
+command! -range -nargs=0 Base64Encode :<line1>,<line2>!perl -MMIME::Base64 -e 'while(<>){print encode_base64(pack "H*", $_), qq{\n}}'
+
+""""""""""""""""""""""""""""""
 " Temp / Backup directory
 """"""""""""""""""""""""""""""
 au BufWritePre * let &bex = '-' . strftime("%Y%m%d-%H%M%S") . '.vimbackup'
