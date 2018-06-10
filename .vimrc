@@ -178,6 +178,13 @@ command! -range -nargs=0 Sha1 :<line1>,<line2>!openssl dgst -Sha1
 command! -range -nargs=0 Sha256 :<line1>,<line2>!openssl dgst -Sha256
 command! -range -nargs=0 Base64Encode :<line1>,<line2>!perl -MMIME::Base64 -e 'while(<>){print encode_base64(pack "H*", $_), qq{\n}}'
 
+function! TrimTrailingSpace() range
+  execute a:firstline . "," . a:lastline . 's/\s\+$//e'
+endfunction
+
+command -bar -nargs=0 -range=% TrimTrailingSpace <line1>,<line2>call TrimTrailingSpace()
+
+
 """"""""""""""""""""""""""""""
 " Temp / Backup directory
 """"""""""""""""""""""""""""""
