@@ -408,6 +408,10 @@ nmap <silent> <C-j> <Plug>(ale_next_wrap)
 let b:ale_linters = ['flake8', 'pylint']
 let g:ale_python_flake8_options = '--max-line-length=120'
 let g:ale_python_pylint_options = '--max-line-length=120'
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:airline#extensions#ale#enabled = 1
 
 """"""""""""""""""""""""""""""
 " Git Gutter

@@ -10,14 +10,17 @@ let g:ale_virtualenv_dir_names = get(g:, 'ale_virtualenv_dir_names', [
 \   've-py3',
 \   've',
 \   'virtualenv',
+\   'venv',
 \])
 
 function! ale#python#FindProjectRootIni(buffer) abort
     for l:path in ale#path#Upwards(expand('#' . a:buffer . ':p:h'))
+        " If you change this, update ale-python-root documentation.
         if filereadable(l:path . '/MANIFEST.in')
         \|| filereadable(l:path . '/setup.cfg')
         \|| filereadable(l:path . '/pytest.ini')
         \|| filereadable(l:path . '/tox.ini')
+        \|| filereadable(l:path . '/mypy.ini')
         \|| filereadable(l:path . '/pycodestyle.cfg')
         \|| filereadable(l:path . '/flake8.cfg')
             return l:path
@@ -31,7 +34,7 @@ endfunction
 " The root directory is defined as the first directory found while searching
 " upwards through paths, including the current directory, until a path
 " containing an init file (one from MANIFEST.in, setup.cfg, pytest.ini,
-" tox.ini) is found. If it is not possible to find the project root directorty
+" tox.ini) is found. If it is not possible to find the project root directory
 " via init file, then it will be defined as the first directory found
 " searching upwards through paths, including the current directory, until no
 " __init__.py files is found.

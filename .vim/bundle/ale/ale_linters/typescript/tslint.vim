@@ -4,7 +4,7 @@
 call ale#Set('typescript_tslint_executable', 'tslint')
 call ale#Set('typescript_tslint_config_path', '')
 call ale#Set('typescript_tslint_rules_dir', '')
-call ale#Set('typescript_tslint_use_global', 0)
+call ale#Set('typescript_tslint_use_global', get(g:, 'ale_use_global_executables', 0))
 call ale#Set('typescript_tslint_ignore_empty_files', 0)
 
 function! ale_linters#typescript#tslint#GetExecutable(buffer) abort
@@ -29,7 +29,6 @@ function! ale_linters#typescript#tslint#Handle(buffer, lines) abort
         endif
 
         let l:item = {
-        \   'filename': ale#path#GetAbsPath(l:dir, l:error.name),
         \   'type': (get(l:error, 'ruleSeverity', '') is# 'WARNING' ? 'W' : 'E'),
         \   'text': l:error.failure,
         \   'lnum': l:error.startPosition.line + 1,
@@ -37,6 +36,13 @@ function! ale_linters#typescript#tslint#Handle(buffer, lines) abort
         \   'end_lnum': l:error.endPosition.line + 1,
         \   'end_col': l:error.endPosition.character + 1,
         \}
+
+        let l:filename = ale#path#GetAbsPath(l:dir, l:error.name)
+
+        " Assume temporary files are this file.
+        if !ale#path#IsTempName(l:filename)
+            let l:item.filename = l:filename
+        endif
 
         if has_key(l:error, 'ruleName')
             let l:item.code = l:error.ruleName
@@ -64,7 +70,7 @@ function! ale_linters#typescript#tslint#GetCommand(buffer) abort
     \  : ''
 
     return ale#path#BufferCdString(a:buffer)
-    \   . ale_linters#typescript#tslint#GetExecutable(a:buffer)
+    \   . ale#Escape(ale_linters#typescript#tslint#GetExecutable(a:buffer))
     \   . ' --format json'
     \   . l:tslint_config_option
     \   . l:tslint_rules_option

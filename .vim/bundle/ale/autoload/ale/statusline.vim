@@ -1,6 +1,14 @@
 " Author: KabbAmine <amine.kabb@gmail.com>
 " Description: Statusline related function(s)
 
+" remove in 2.0
+"
+" A deprecated setting for ale#statusline#Status()
+" See :help ale#statusline#Count() for getting status reports.
+let g:ale_statusline_format = get(g:, 'ale_statusline_format',
+\   ['%d error(s)', '%d warning(s)', 'OK']
+\)
+
 function! s:CreateCountDict() abort
     " Keys 0 and 1 are for backwards compatibility.
     " The count object used to be a List of [error_count, warning_count].
@@ -90,11 +98,18 @@ function! s:StatusForListFormat() abort
     return l:res
 endfunction
 
+" remove in 2.0
+"
 " Returns a formatted string that can be integrated in the statusline.
 "
 " This function is deprecated, and should not be used. Use the airline plugin
 " instead, or write your own status function with ale#statusline#Count()
 function! ale#statusline#Status() abort
+    if !get(g:, 'ale_deprecation_ale_statusline_status', 0)
+        execute 'echom ''ale#statusline#Status() is deprecated, use ale#statusline#Count() to write your own function.'''
+        let g:ale_deprecation_ale_statusline_status = 1
+    endif
+
     if !exists('g:ale_statusline_format')
         return 'OK'
     endif
