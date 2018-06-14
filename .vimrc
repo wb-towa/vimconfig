@@ -265,6 +265,7 @@ let g:bufferline_excludes = ["^NERD_tree_[0-9]*$"]
 let g:NERDTreeQuitOnOpen = 1
 let g:NERDTreeChDirMode = 0
 let g:NERDTreeShowBookmarks = 1
+let NERDTreeRespectWildIgnore=1
 
 if has("win32")
     let g:NERDTreeBookmarksFile=''.$VIM.'\temp\nerdtree_bookmarks.txt'
