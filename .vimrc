@@ -184,6 +184,8 @@ endfunction
 
 command -bar -nargs=0 -range=% TrimTrailingSpace <line1>,<line2>call TrimTrailingSpace()
 
+nmap <F10> :TrimTrailingSpace<CR>
+vmap <F10> :TrimTrailingSpace<CR>
 
 """"""""""""""""""""""""""""""
 " Temp / Backup directory
@@ -241,6 +243,21 @@ endfunction
 
 autocmd VimEnter * call AirlineInit()
 
+
+""""""""""""""""""""""""""""""
+" ultisnips
+""""""""""""""""""""""""""""""
+"   g:UltiSnipsExpandTrigger               <tab>
+"   g:UltiSnipsListSnippets                <c-tab>
+"   g:UltiSnipsJumpForwardTrigger          <c-j>
+"   g:UltiSnipsJumpBackwardTrigger         <c-k>
+let g:UltiSnipsExpandTrigger="<tab>"
+if has("win32")
+    let g:UltiSnipsSnippetsDir = ''.$VIM.'/ultisnips/'
+else
+    let g:UltiSnipsSnippetsDir = ''.$HOME.'/.vim/ultisnips/'
+endif
+let g:UltiSnipsEditSplit="vertical"
 
 """"""""""""""""""""""""""""""
 " bufferline
@@ -428,17 +445,15 @@ noremap <silent> <F4> :call ToggleGitGutter()<cr>
 let g:grepper = { 'open': 0 }
 autocmd User Grepper copen 20
 
+""""""""""""""""""""""""""""""
+" Groovy / Jenkinss
+""""""""""""""""""""""""""""""
+au BufNewFile,BufRead Jenkinsfile setf groovy
 
 """"""""""""""""""""""""""""""
 " Various Functions
 """"""""""""""""""""""""""""""
-" Removes trailing spaces
-function TrimSpace()
-  %s/\s*$//
-  ''
-endfunction
-
-nmap <F10> :call TrimSpace()<CR>
+" n/a
 
 """"""""""""""""""""""""""""""
 " Various visual settings
