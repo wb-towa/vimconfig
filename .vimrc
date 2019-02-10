@@ -90,7 +90,7 @@ set list
 " default menu.preview
 set completeopt=menu
 
-" remap <leader>
+" remap <leader> - while commented out use \
 " let mapleader = ","
 
 "Highlight white space
@@ -396,6 +396,8 @@ else
     let g:ctrlp_cache_dir = $HOME.'/temp/ctrlp'
 endif
 "let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+nmap <c-l> :CtrlPLine<CR>
+nmap <c-b> :CtrlPBuffer<CR>
 
 """"""""""""""""""""""""""""""
 " TagBar
