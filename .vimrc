@@ -463,7 +463,6 @@ au BufNewFile,BufRead Jenkinsfile setf groovy
 
 let g:airline_theme='lucius'
 colorscheme lucius
-LuciusWhite
 
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Red
