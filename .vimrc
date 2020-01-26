@@ -406,6 +406,23 @@ endif
 nmap <c-l> :CtrlPLine<CR>
 nmap <c-b> :CtrlPBuffer<CR>
 
+
+""""""""""""""""""""""""""""""
+" Code Folding
+""""""""""""""""""""""""""""""
+" https://vim.fandom.com/wiki/Folding
+" https://learnvimscriptthehardway.stevelosh.com/chapters/48.html
+" NOTES:
+" za : Toggle code folding at the current line.
+"      The block that the current line belongs to is
+"      folded (closed) or unfolded (opened).
+" zo : Open fold.
+" zc : Close fold.
+" zR : Open all folds.
+" zM : Close all folds.
+
+" TODO: Config for code folding
+
 """"""""""""""""""""""""""""""
 " TagBar
 """"""""""""""""""""""""""""""
@@ -470,6 +487,7 @@ au BufNewFile,BufRead Jenkinsfile setf groovy
 
 let g:airline_theme='lucius'
 colorscheme lucius
+LuciusWhite
 
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Red
@@ -496,4 +514,9 @@ endfunction
 
 noremap <silent> <F9> :call BgToggle()<cr>
 
+
+" Neovim specific
+if !has('nvim')
+    set ttymouse=xterm2
+endif
 
