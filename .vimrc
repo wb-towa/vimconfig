@@ -1,19 +1,7 @@
-" All system-wide defaults are set in $VIMRUNTIME/debian.vim (usually just
-" /usr/share/vim/vimcurrent/debian.vim) and sourced by the call to :runtime
-" you can find below.  If you wish to change any of those settings, you should
-" do it in this file (/etc/vim/vimrc), since debian.vim will be overwritten
-" everytime an upgrade of the vim packages is performed.  It is recommended to
-" make changes after sourcing debian.vim since it alters the value of the
-" 'compatible' option.
+" MVIM Config - Updated 2022.06.13
+" Mostly a port of a nvimconfig and a work in progress with a view to make
+" compatible with nvim and vim.
 
-" This line should not be removed as it ensures that various options are
-" properly set to work with the Vim-related packages available in Debian.
-runtime! debian.vim
-
-" Uncomment the next line to make Vim more Vi-compatible
-" NOTE: debian.vim sets 'nocompatible'.  Setting 'compatible' changes numerous
-" options, so any other options should be set AFTER setting 'compatible'.
-"set compatible
 
 " Vim5 and later versions support syntax highlighting. Uncommenting the
 " following enables syntax highlighting by default.
@@ -21,62 +9,29 @@ if has("syntax")
   syntax on
 endif
 
-" If using a dark background within the editing area and syntax highlighting
-" turn on this option as well
-set background=light
-
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-"if has("autocmd")
-"  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-"endif
-
-" Uncomment the following to have Vim load indentation rules and plugins
-" according to the detected filetype.
-"if has("autocmd")
-"  filetype plugin indent on
-"endif
-
-" The following are commented out as they cause vim to behave a lot
-" differently from regular Vi. They are highly recommended though.
-"set showcmd        "Show (partial) command in status line.
-"set showmatch      "Show matching brackets.
-"set ignorecase     "Do case insensitive matching
-"set smartcase      "Do smart case matching
-"set incsearch      "Incremental search
-"set autowrite      "Automatically save before commands like :next and :make
-"set hidden         "Hide buffers when they are abandoned
-"set mouse=a        "Enable mouse usage (all modes)
-
-" Source a global configuration file if available
-"if filereadable("/etc/vim/vimrc.local")
-"  source /etc/vim/vimrc.local
-"endif
-
-" my additions
-call pathogen#infect()
-filetype on         "enables filetype detection
-filetype plugin on  "enables filetype specific plugins
-set guioptions-=T   "remove toolbar
+filetype on            "enables filetype detection
+filetype plugin on     "enables filetype specific plugins
+set guioptions-=T      "remove toolbar
 set expandtab
-set tabstop=4       "set tabstop at 4
+set tabstop=4          "set tabstop at 4
 set softtabstop=4
-set hlsearch        "highlight searches
-set shiftwidth=4    "numbers of spaces to (auto)indent
-set ruler           "show the cursor position all the time
-set number          "show line numbers
-set backspace=2     "make backspace work more as expected - mainly for windows
-"set autoindent     "always set autoindenting on
-"set smartindent    "smart indent
-"set cindent        "cindent
+set hlsearch           "highlight searches
+set shiftwidth=4       "numbers of spaces to (auto)indent
+set ruler              "show the cursor position all the time
+set number             "show line numbers
+set backspace=2        "make backspace work more as expected - mainly for windows
+"set autoindent        "always set autoindenting on
+"set smartindent       "smart indent
+"set cindent           "cindent
 set noautoindent
 set nosmartindent
 set nocindent
 set nocursorcolumn
+set fileencoding=utf-8 "set the encoding of files written
 set encoding=utf-8
 set ffs=unix,dos
 set t_Co=256
-set laststatus=2    " show status bar. CLI vim doesn't show it
+set laststatus=2       "show status bar. CLI vim doesn't show it
 set spelllang=en_gb
 "Ignore lists roughly broken into types for easier referencing
 set wildignore+=*.exe,CVS,*.class,*.dll,*.pyc,*.bak,*.so,*.swp,*.jar,*.desktop
@@ -106,12 +61,13 @@ endif
 map <F1> :bprev<CR>
 "map F2 to open next buffer
 map <F2> :bnext<CR>
-"map F3 to open NerdTree
-map <F3> :NERDTree $HOME<CR>
+" Note move <F3> -> NERDTree mapping into NERDTree group
+
 
 " Move around windows with Alt + arrow keys
 " Note: nmap so it only works in normal mode
-if has("gui_macvim")
+" TODO: I think the 'else' is windows so reverse and simplify?
+if !has('win32')
     nmap <silent> <S-Up> :wincmd k<CR>
     nmap <silent> <S-Down> :wincmd j<CR>
     nmap <silent> <S-Left> :wincmd h<CR>
@@ -138,6 +94,7 @@ augroup CursorLine
     au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
     au WinLeave * setlocal nocursorline
 augroup END
+
 
 """"""""""""""""""""""""""""""
 " Specfic file type settings
@@ -171,10 +128,10 @@ au FileType xml exe ":silent 1,$!xmllint --format --recover - 2>/dev/null"
 
 :autocmd Filetype ruby set softtabstop=2
 :autocmd Filetype ruby set shiftwidth=2
-:autocmd Filetype ruby set tabstop==2
+:autocmd Filetype ruby set tabstop=2
 :autocmd Filetype yaml set softtabstop=2
 :autocmd Filetype yaml set shiftwidth=2
-:autocmd Filetype yaml set tabstop==2
+:autocmd Filetype yaml set tabstop=2
 
 """"""""""""""""""""""""""""""
 " Formatters
@@ -194,6 +151,59 @@ command -bar -nargs=0 -range=% TrimTrailingSpace <line1>,<line2>call TrimTrailin
 nmap <F10> :TrimTrailingSpace<CR>
 vmap <F10> :TrimTrailingSpace<CR>
 
+
+""""""""""""""""""""""""""""""
+" Vim Plug
+""""""""""""""""""""""""""""""
+" Specify a directory for plugins
+" - For Neovim: stdpath('data') . '/plugged'
+" - Avoid using standard Vim directory names like 'plugin'
+call plug#begin('~/.vim/bundle')
+
+" TODO: Investigate https://github.com/liuchengxu/vim-clap
+
+" Nerdtree
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+" Airline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ntpeters/vim-airline-colornum'
+
+"Plug 'SirVer/ultisnips'
+Plug 'majutsushi/tagbar'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'mhinz/vim-grepper', { 'on': ['Grepper', '<plug>(GrepperOperator)'] }
+Plug 'bling/vim-bufferline'
+Plug 'vim-scripts/VST'
+Plug 'dense-analysis/ale'
+Plug 'Yggdroot/indentLine'
+
+" Languages
+Plug 'fatih/vim-go'
+Plug 'rust-lang/rust.vim'
+Plug 'davidhalter/jedi-vim'
+Plug 'alfredodeza/pytest.vim'
+Plug 'keith/swift.vim'
+Plug 'vim-ruby/vim-ruby'
+
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'mbbill/undotree'
+Plug 'jontrainor/TaskList.vim'
+Plug 'liuchengxu/vim-clap', { 'do': ':Clap install-binary' }
+
+" Git related
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+" may be worth reviewing https://github.com/benawad/dotfiles/blob/master/init.vim
+" Documentation
+Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'vim-pandoc/vim-pandoc'
+
+" Initialize plugin system
+call plug#end()
+
+
 """"""""""""""""""""""""""""""
 " Temp / Backup directory
 """"""""""""""""""""""""""""""
@@ -202,91 +212,57 @@ au BufWritePre * let &bex = '-' . strftime("%Y%m%d-%H%M%S") . '.vimbackup'
 "On Windows I'll just dump the stuff in <vim folder>/temp
 ""otherwise <HOME>/temp
 if has("win32")
-    set backupdir=$VIM/temp//
-    set directory=$VIM/temp//
+    set backupdir=$VIM/temp/
+    set directory=$VIM/temp/
 else
-    set backupdir=$HOME/temp//
-    set directory=$HOME/temp//
+    set backupdir=$HOME/temp/
+    set directory=$HOME/temp/
 endif
 
-"set nobackup
-"set nowritebackup
-
-"set up status bar for buftab - not used but will leave here for now
-"set statusline=\ #{buftabs}%=\ \ Ln\ %-5.5l\ Col\ %-4.4v
 
 """"""""""""""""""""""""""""""
 " airline
 """"""""""""""""""""""""""""""
 set lazyredraw
 let g:airline_theme             = 'powerlineish'
-let g:airline#extensions#branch#enabled     = 1
-let g:airline#extensions#syntastic#enabled  = 1
 "vim-powerline symbols
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
 
+
 if has("win32")
-    let g:airline_left_sep          = '►'
-    let g:airline_left_alt_sep      = '»'
-    let g:airline_right_sep         = '◄'
-    let g:airline_right_alt_sep     = '«'
-    let g:airline_symbols.branch    = '‡'
+    let g:airline_left_sep           = '►'
+    let g:airline_left_alt_sep       = '»'
+    let g:airline_right_sep          = '◄'
+    let g:airline_right_alt_sep      = '«'
+    let g:airline_symbols.branch     = '‡'
+    let g:airline_symbols.whitespace = 'Ξ'
+    let g:airline_symbols.linenr     = 'l:c'
+    let g:airline_symbols.paste      = 'ρ'
 else
-    let g:airline_left_sep          = '»'
-    let g:airline_left_alt_sep      = '▶'
-    let g:airline_right_sep         = '«'
-    let g:airline_right_alt_sep     = '◀'
-    let g:airline_symbols.branch    = '⎇'
+    let g:airline_left_sep           = '»'
+    let g:airline_left_alt_sep       = '▶'
+    let g:airline_right_sep          = '«'
+    let g:airline_right_alt_sep      = '◀'
+    let g:airline_symbols.branch     = '⎇'
+    let g:airline_symbols.whitespace = 'Ξ'
+    let g:airline_symbols.linenr     = '␤'
+    let g:airline_symbols.paste      = 'ρ'
 endif
-let g:airline_symbols.readonly   = '!'
-let g:airline_symbols.linenr = 'l:c'
+let g:airline_symbols.readonly       = '!'
+let g:airline#extensions#branch#enabled     = 1
+let g:airline#extensions#hunks#enabled      = 1
 let g:airline#extensions#bufferline#enabled = 1
 
-function! AirlineInit()
-  let g:airline_section_z = airline#section#create_right(['%3p%% %{g:airline_symbols.linenr} %03l:%03c %{strftime("[%H:%M %a %d.%b.%y]")}'])
-endfunction
+let g:airline_section_y = '%3p%% %{g:airline_symbols.linenr} %03l:%03c'
+let g:airline_section_z = '%{strftime("[%H:%M %a %d.%b.%y]")}'
 
-autocmd VimEnter * call AirlineInit()
-
-
-""""""""""""""""""""""""""""""
-" ultisnips
-""""""""""""""""""""""""""""""
-"   g:UltiSnipsExpandTrigger               <tab>
-"   g:UltiSnipsListSnippets                <c-tab>
-"   g:UltiSnipsJumpForwardTrigger          <c-j>
-"   g:UltiSnipsJumpBackwardTrigger         <c-k>
-let g:UltiSnipsExpandTrigger="<tab>"
-if has("win32")
-    let g:UltiSnipsSnippetsDir = ''.$VIM.'/ultisnips/'
-else
-    let g:UltiSnipsSnippetsDir = ''.$HOME.'/.vim/ultisnips/'
-endif
-let g:UltiSnipsEditSplit="vertical"
-
-""""""""""""""""""""""""""""""
-" bufferline
-""""""""""""""""""""""""""""""
-"left / right symbols
-let g:bufferline_active_buffer_left = '['
-let g:bufferline_active_buffer_right = ']'
-"show the buffer number
-let g:bufferline_show_bufnr = 1
-"symbol for modified files
-let g:bufferline_modified = '+'
-"no highlight if one file
-let g:bufferline_solo_highlight = 0
-"echo to command line
-let g:bufferline_echo = 0
-"buffers to exclude
-let g:bufferline_excludes = ["^NERD_tree_[0-9]*$"]
 
 """"""""""""""""""""""""""""""
 " NerdTree
 """"""""""""""""""""""""""""""
-let g:NERDTreeQuitOnOpen = 1
+let g:NERDTreeQuitOnOpen = 0
 let g:NERDTreeChDirMode = 0
 let g:NERDTreeShowBookmarks = 1
 let NERDTreeRespectWildIgnore=1
@@ -294,37 +270,43 @@ let NERDTreeRespectWildIgnore=1
 if has("win32")
     let g:NERDTreeBookmarksFile=''.$VIM.'\temp\nerdtree_bookmarks.txt'
 else
-    let g:NERDTreeBookmarksFile=''.$HOME.'/temp/nerdtree_bookmarks.txt'
+    let g:NERDTreeBookmarksFile=''.$HOME.'./config/temp/nerdtree_bookmarks.txt'
 endif
 
+"map F3 to open NerdTree in cwd
+map <F3> :NERDTreeToggle<CR>
+
+" Close nvim if NERDTree is the only window left open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+
 """"""""""""""""""""""""""""""
-" Undotree
+" Deoplete
 """"""""""""""""""""""""""""""
+"let g:deoplete#enable_at_startup = 1
+" use tab to forward cycle
+"inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
+" use tab to backward cycle
+"inoremap <silent><expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+" Close the documentation window when completion is done
+"autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+
+""""""""""""""""""""""""""""""
+" TagBar
+""""""""""""""""""""""""""""""
+nmap <F12> :TagbarToggle<CR>
+
 if has("win32")
-    set undodir=$VIM\temp\undotree\\
-else
-    set undodir=$HOME/temp/undotree//
+    let g:tagbar_ctags_bin=$VIM.'\vimfiles\bundle\tagbar\win\ctags.exe'
 endif
 
-set undofile
-
-let g:undotree_WindowLayout = 4
-nnoremap <F5> :UndotreeToggle<cr>
-
-""""""""""""""""""""""""""""""
-" Jedit
-""""""""""""""""""""""""""""""
-let g:jedi#show_call_signatures = "0" " Disable - I want to see the mode (visual
-                                      "/ insert) and there's a conflict when set
-                                      " to 2. setting to 1 is nice but causes
-                                      " issues
-let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#goto_assignments_command = "<leader>g"
-let g:jedi#goto_definitions_command = "<leader>d"
-let g:jedi#documentation_command = "K"
-let g:jedi#usages_command = "<leader>n"
-let g:jedi#completions_command = "<C-Space>"
-let g:jedi#rename_command = "<leader>r"
+let g:tagbar_width=45
+let g:tagbar_autoclose=1
+let g:tagbar_autofocus=1
+let g:tagbar_indent=2
+let g:tagbar_expand=0
+let g:tagbar_foldlevel=1
 
 
 """"""""""""""""""""""""""""""
@@ -379,6 +361,39 @@ au syntax cpp RainbowParenthesesLoadRound
 au syntax cpp RainbowParenthesesLoadSquare
 au syntax cpp RainbowParenthesesLoadBraces
 
+
+
+""""""""""""""""""""""""""""""
+" Undotree
+""""""""""""""""""""""""""""""
+if has("win32")
+    set undodir=$VIM\temp\undotree\\
+else
+    set undodir=$HOME/.vim/temp/undotree//
+endif
+
+set undofile
+
+let g:undotree_WindowLayout = 4
+nnoremap <F5> :UndotreeToggle<cr>
+
+""""""""""""""""""""""""""""""
+" Jedi
+""""""""""""""""""""""""""""""
+"let g:jedi#show_call_signatures = "0" " Disable - I want to see the mode (visual
+                                      "/ insert) and there's a conflict when set
+                                      " to 2. setting to 1 is nice but causes
+                                      " issues
+"let g:jedi#use_tabs_not_buffers = 0
+"let g:jedi#goto_assignments_command = "<leader>g"
+"let g:jedi#goto_definitions_command = "<leader>d"
+"let g:jedi#documentation_command = "K"
+"let g:jedi#usages_command = "<leader>n"
+"let g:jedi#completions_command = "<C-Space>"
+"let g:jedi#rename_command = "<leader>r"
+"let g:jedi#environment_path = "/usr/bin/python3.9"
+
+
 """"""""""""""""""""""""""""""
 " IndentLine
 """"""""""""""""""""""""""""""
@@ -390,6 +405,7 @@ let g:indentLine_bufNameExclude = ['_.*', 'NERD_tree.*', '*.pytest']
 map T :TaskList<CR>
 let g:tlWindowPosition = 1           "open at the bottom - 0 for top
 let g:tlRememberPosition = 1
+
 
 """"""""""""""""""""""""""""""
 " CtrlP
@@ -408,38 +424,6 @@ nmap <c-b> :CtrlPBuffer<CR>
 
 
 """"""""""""""""""""""""""""""
-" Code Folding
-""""""""""""""""""""""""""""""
-" https://vim.fandom.com/wiki/Folding
-" https://learnvimscriptthehardway.stevelosh.com/chapters/48.html
-" NOTES:
-" za : Toggle code folding at the current line.
-"      The block that the current line belongs to is
-"      folded (closed) or unfolded (opened).
-" zo : Open fold.
-" zc : Close fold.
-" zR : Open all folds.
-" zM : Close all folds.
-
-" TODO: Config for code folding
-
-""""""""""""""""""""""""""""""
-" TagBar
-""""""""""""""""""""""""""""""
-nmap <F12> :TagbarToggle<CR>
-
-if has("win32")
-    let g:tagbar_ctags_bin=$VIM.'\vimfiles\bundle\tagbar\win\ctags.exe'
-endif
-
-let g:tagbar_width=45
-let g:tagbar_autoclose=1
-let g:tagbar_autofocus=1
-let g:tagbar_indent=2
-let g:tagbar_expand=0
-let g:tagbar_foldlevel=1
-
-""""""""""""""""""""""""""""""
 " Ale
 """"""""""""""""""""""""""""""
 let g:ale_sign_column_always = 1
@@ -448,8 +432,16 @@ let g:ale_sign_column_always = 1
 nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 nmap <silent> <C-j> <Plug>(ale_next_wrap)
 
+let b:ale_linters = {
+        \   'ruby': ['standardrb'],
+        \   'python': ['flake8', 'pylint'],
+        \}
+let g:ale_fixers = {
+      \    'ruby': ['standardrb'],
+      \}
+
 " Check Python files with flake8 and pylint.
-let b:ale_linters = ['flake8', 'pylint']
+"let b:ale_linters = ['flake8', 'pylint']
 let g:ale_python_flake8_options = '--max-line-length=120'
 let g:ale_python_pylint_options = '--max-line-length=120'
 let g:ale_echo_msg_error_str = 'E'
@@ -457,12 +449,54 @@ let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:airline#extensions#ale#enabled = 1
 
+
+""""""""""""""""""""""""""""""
+" ultisnips
+""""""""""""""""""""""""""""""
+"   g:UltiSnipsExpandTrigger               <tab>
+"   g:UltiSnipsListSnippets                <c-tab>
+"   g:UltiSnipsJumpForwardTrigger          <c-j>
+"   g:UltiSnipsJumpBackwardTrigger         <c-k>
+let g:UltiSnipsExpandTrigger="<tab>"
+if has("win32")
+    let g:UltiSnipsSnippetsDir = ''.$VIM.'/ultisnips/'
+else
+    let g:UltiSnipsSnippetsDir = ''.$HOME.'/.vim/ultisnips/'
+endif
+let g:UltiSnipsEditSplit="vertical"
+
+""""""""""""""""""""""""""""""
+" bufferline
+""""""""""""""""""""""""""""""
+"left / right symbols
+let g:bufferline_active_buffer_left = '['
+let g:bufferline_active_buffer_right = ']'
+"show the buffer number
+let g:bufferline_show_bufnr = 1
+"symbol for modified files
+let g:bufferline_modified = '+'
+"no highlight if one file
+let g:bufferline_solo_highlight = 0
+"echo to command line
+let g:bufferline_echo = 0
+"buffers to exclude
+let g:bufferline_excludes = ["^NERD_tree_[0-9]*$"]
+
+
 """"""""""""""""""""""""""""""
 " Git Gutter
 """"""""""""""""""""""""""""""
-let g:gitgutter_enabled=0
+
+if exists('&signcolumn')  " Vim 7.4.2201
+  set signcolumn=yes
+else
+  let g:gitgutter_sign_column_always = 1
+endif
+
+let g:gitgutter_signs = 1
+let g:gitgutter_enabled=1
 let g:gitgutter_avoid_cmd_prompt_on_windows=0
-noremap <silent> <F4> :call ToggleGitGutter()<cr>
+noremap <silent> <F4> :GitGutterToggle<cr>
 
 
 """"""""""""""""""""""""""""""
@@ -480,6 +514,7 @@ au BufNewFile,BufRead Jenkinsfile setf groovy
 " Various Functions
 """"""""""""""""""""""""""""""
 " n/a
+
 
 """"""""""""""""""""""""""""""
 " Various visual settings
@@ -503,8 +538,11 @@ set colorcolumn=80,100
 ""do for now
 if has ("win32")
     set guifont=Courier_New:h11:cANSI
-elseif has("gui_macvim")
-    set guifont=Menlo\ Regular:h12
+elseif has("nvim")
+    set guifont=JetBrainsMono-Regular:h14
+else
+    "set guifont=JetBrainsMono-Regular:h10
+    set gfn=JetBrains\ Mono\ Semi-Bold\ 12
 endif
 
 " Toggle background color
@@ -520,3 +558,77 @@ if !has('nvim')
     set ttymouse=xterm2
 endif
 
+
+""""""""""""""""""""""""""""""
+"  Vim Clap
+""""""""""""""""""""""""""""""
+
+"let g:clap_theme = 'peachpuff'
+
+
+""""""""""""""""""""""""""""""
+"  Pandoc
+""""""""""""""""""""""""""""""
+let g:pandoc#modules#disabled = ["folding"]
+
+let g:pandoc#syntax#conceal#use = 0
+
+
+" TODO: Does not work but not urgent enough to fix now
+function! TogglePDConceal()
+    if g:pandoc#syntax#conceal#use != 0
+        let g:pandoc#syntax#conceal#use = 0
+    else
+        let g:pandoc#syntax#conceal#use = 1
+    endif
+endfunction
+
+noremap <silent> <F8> :call TogglePDConceal()<cr>
+
+
+""""""""""""""""""""""""""""""
+"  JavaScript / JSON
+""""""""""""""""""""""""""""""
+
+" Do NOT hide double-quotes for JSON
+autocmd FileType json let g:indentLine_enabled=0
+
+
+""""""""""""""""""""""""""""""
+"  Go
+""""""""""""""""""""""""""""""
+
+" Run goimports along gofmt on each save
+let g:go_fmt_command = "goimports"
+
+" Automatically get signature/type info for object under cursor
+let g:go_auto_type_info = 1
+
+" TIPS
+"
+" :GoRun :GoBuild :GoInstall
+"
+" :GoDef          # goto definition of object under cursor
+" gd              # also has the same effect
+" Ctrl-O / Ctrl-I # hop back to your source file/return to definition
+"
+" :GoDoc          # opens up a side window for quick documentationn
+" K               # also has the same effect
+"
+" :GoTest         # run every *_test.go file and report results
+" :GoTestFunc     # or just test the function under your cursor
+" :GoCoverage     # check your test coverage
+" :GoAlternate # switch bewteen your test case and implementation
+"
+" :GoImport       # manage and name your imports
+" :GoImportAs
+" :GoDrop
+"
+" :GoRename       # precise renaming of identifiers
+"
+" :GoLint         # lint your code
+" :GoVer
+" :GoErrCheck
+"
+" :GoAddTags      # manage your tags
+" :GoRemoveTags
